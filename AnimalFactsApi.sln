@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalFactsApi", "AnimalFactsApi\AnimalFactsApi.csproj", "{DC7E433B-6CAF-4CCD-BEF8-CD556504B606}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalFactsCSVParser", "AnimalFactsCSVParser\AnimalFactsCSVParser.csproj", "{99B603CA-64BB-4A49-915C-63136BA18D4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{DC7E433B-6CAF-4CCD-BEF8-CD556504B606}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC7E433B-6CAF-4CCD-BEF8-CD556504B606}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC7E433B-6CAF-4CCD-BEF8-CD556504B606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99B603CA-64BB-4A49-915C-63136BA18D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99B603CA-64BB-4A49-915C-63136BA18D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99B603CA-64BB-4A49-915C-63136BA18D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99B603CA-64BB-4A49-915C-63136BA18D4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
