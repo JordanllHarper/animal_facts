@@ -1,4 +1,8 @@
+using AnimalFactsApi.Dao;
+
 namespace AnimalFactsApi;
+
+record DatabaseConfiguration(string DbName, string DbConnectionString, string DbUsername, string DbPassword);
 
 public class Program
 {
@@ -13,6 +17,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
+        builder.Services.AddSingleton<IFactDao, FactDao>();
+        builder.Services.AddSingleton<IFactRepository, FactRepository>();
+        builder.Configuration.AddUserSecrets<DatabaseConfiguration>();
 
         var app = builder.Build();
 
@@ -22,6 +29,7 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();

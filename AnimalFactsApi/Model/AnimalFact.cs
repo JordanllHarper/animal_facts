@@ -1,5 +1,3 @@
 namespace AnimalFactsApi.Model;
 
-record AnimalFact(string AnimalName, string Source, string Text, string MediaLink, string WikiLink)
-{
-}
+public record AnimalFact(int Id, string? AnimalName, string? Source, string? Text, string? MediaLink, string? WikiLink);
