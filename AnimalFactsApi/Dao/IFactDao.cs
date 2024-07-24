@@ -10,28 +10,11 @@ public interface IFactDao
     Task<Result<AnimalFact>> getFactById(string id);
 }
 
-public class FactDao : IFactDao
+public class FactDao(string connectionString) : IFactDao
 {
-    private readonly string _connectionString;
-
-    public FactDao(IConfiguration configuration)
-    {
-        // Build connection string using parameters from portal
-        //
-        var animalFactsSection = configuration.GetSection("AnimalFacts");
-        var host = animalFactsSection.GetValue<string>("DbName");
-        var user = animalFactsSection.GetValue<string>("DbUser");
-        var password = animalFactsSection.GetValue<string>("DbPassword");
-        const string dbName = "postgres";
-        const int port = 5432;
-
-        _connectionString =
-            $"Server={host};Username={user};Database={dbName};Port={port};Password={password};SSLMode=Prefer";
-    }
-
     public async Task<Result<AnimalFact>> getFact()
     {
-        await using var conn = new NpgsqlConnection(connectionString: _connectionString);
+        await using var conn = new NpgsqlConnection(connectionString: connectionString);
         Console.WriteLine("Opening connection for getting facts");
 
         await conn.OpenAsync();
@@ -54,7 +37,7 @@ public class FactDao : IFactDao
         try
         {
             var parsedId = int.Parse(id);
-            await using var conn = new NpgsqlConnection(connectionString: _connectionString);
+            await using var conn = new NpgsqlConnection(connectionString: connectionString);
             Console.WriteLine("Opening connection for getting facts");
 
             await conn.OpenAsync();
