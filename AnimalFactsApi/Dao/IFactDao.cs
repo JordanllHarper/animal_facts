@@ -1,5 +1,6 @@
 using AnimalFactsApi.Model;
 using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 namespace AnimalFactsApi.Dao;
@@ -10,25 +11,15 @@ public interface IFactDao
     Task<Result<AnimalFact>> getFactById(string id);
 }
 
-public class FactDao(string connectionString) : IFactDao
+public class FactDao(AnimalFactsContext context) : IFactDao
 {
-    public async Task<Result<AnimalFact>> getFact()
+    private AnimalFactsContext _context = context;
+
+    public Task<Result<AnimalFact>> getFact()
     {
-        await using var conn = new NpgsqlConnection(connectionString: connectionString);
-        Console.WriteLine("Opening connection for getting facts");
-
-        await conn.OpenAsync();
-        await using var command = new NpgsqlCommand("SELECT * FROM facts ORDER BY random() LIMIT 1", conn);
-        var reader = command.ExecuteReader();
-        await reader.ReadAsync();
-        var id = reader.GetInt32(0);
-        var name = reader.GetString(1);
-        var source = reader.GetString(2);
-        var text = reader.GetString(3);
-        var media = reader.GetString(4);
-        var wiki = reader.GetString(5);
-
-        return new AnimalFact(id, name, source, text, media, wiki);
+        
+        return context.Facts.FromSqlInterpolated($"SELECT * FROM animal_facts_db.facts ORDER BY random() LIMIT 1")
+            .FirstAsync().ContinueWith(t => t.Result.ToResult());
     }
 
 
@@ -36,22 +27,6 @@ public class FactDao(string connectionString) : IFactDao
     {
         try
         {
-            var parsedId = int.Parse(id);
-            await using var conn = new NpgsqlConnection(connectionString: connectionString);
-            Console.WriteLine("Opening connection for getting facts");
-
-            await conn.OpenAsync();
-            await using var command = new NpgsqlCommand($"SELECT * FROM facts WHERE id = {parsedId}", conn);
-            var reader = command.ExecuteReader();
-            await reader.ReadAsync();
-            var factId = reader.GetInt32(0);
-            var name = reader.GetString(1);
-            var source = reader.GetString(2);
-            var text = reader.GetString(3);
-            var media = reader.GetString(4);
-            var wiki = reader.GetString(5);
-
-            return new AnimalFact(factId, name, source, text, media, wiki);
         }
         catch (FormatException e)
         {

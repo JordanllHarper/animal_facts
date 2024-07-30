@@ -1,5 +1,6 @@
 using System.Configuration;
 using AnimalFactsApi.Dao;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnimalFactsApi;
 
@@ -28,6 +29,17 @@ public class Program
             return new FactDao(connectionString);
         });
         builder.Services.AddSingleton<IFactRepository, FactRepository>();
+        var animalFactsConfig = builder.Configuration.GetSection("AnimalFacts");
+        var connectionString =
+            $"Host={animalFactsConfig.GetValue<string>("DbHost")};" +
+            $"Database={animalFactsConfig.GetValue<string>("DbName")};" +
+            $"Username={animalFactsConfig.GetValue<string>("DbUser")};" +
+            $"Password={animalFactsConfig.GetValue<string>("DbPassword")}";
+        builder.Services.AddDbContext<AnimalFactsContext>(options =>
+            options
+                .UseNpgsql(connectionString)
+                .UseSnakeCaseNamingConvention()
+        );
         builder.Configuration.AddUserSecrets<DatabaseConfiguration>();
 
         var app = builder.Build();
