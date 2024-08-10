@@ -1,5 +1,6 @@
 using System.Configuration;
 using AnimalFactsApi.Dao;
+using AnimalFactsApi.Repo;
 using Microsoft.EntityFrameworkCore;
 
 namespace AnimalFactsApi;
@@ -19,28 +20,19 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
-        var connectionString = builder.Configuration.GetConnectionString("AnimalFactsDb");
-        builder.Services.AddSingleton<IFactDao, FactDao>(_ =>
-        {
-            if (connectionString == null)
-            {
-                throw new ConfigurationErrorsException("Please configure your connection string for postgresql");
-            }
-            return new FactDao(connectionString);
-        });
-        builder.Services.AddSingleton<IFactRepository, FactRepository>();
         var animalFactsConfig = builder.Configuration.GetSection("AnimalFacts");
         var connectionString =
             $"Host={animalFactsConfig.GetValue<string>("DbHost")};" +
             $"Database={animalFactsConfig.GetValue<string>("DbName")};" +
             $"Username={animalFactsConfig.GetValue<string>("DbUser")};" +
             $"Password={animalFactsConfig.GetValue<string>("DbPassword")}";
+        builder.Services.AddSingleton<IFactDao, FactDao>();
+        builder.Services.AddSingleton<IFactRepository, FactRepository>();
         builder.Services.AddDbContext<AnimalFactsContext>(options =>
             options
                 .UseNpgsql(connectionString)
                 .UseSnakeCaseNamingConvention()
         );
-        builder.Configuration.AddUserSecrets<DatabaseConfiguration>();
 
         var app = builder.Build();
 
@@ -49,6 +41,11 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+            builder.Configuration.AddJsonFile(path: "appsettings.Development.json");
+        }
+        else
+        {
+            builder.Configuration.AddUserSecrets<DatabaseConfiguration>();
         }
 
         app.UseHttpsRedirection();

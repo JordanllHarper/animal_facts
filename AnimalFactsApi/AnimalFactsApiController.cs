@@ -1,3 +1,4 @@
+using AnimalFactsApi.Repo;
 using FluentResults.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,6 @@ namespace AnimalFactsApi
     public class AnimalFactsApiController(IFactRepository factRepository) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> Get(string? id) => await factRepository.getFact(id).ToActionResult();
+        public async Task<IActionResult> Get(string? id) => await factRepository.GetFact(id).ToActionResult();
     }
 }

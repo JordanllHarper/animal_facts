@@ -25,12 +25,18 @@ static class Program
         try
         {
             var animalFactsConfig = configuration.GetSection("AnimalFacts");
+            var host = animalFactsConfig.GetValue<string>("DbHost");
+            Console.WriteLine($"Using host: {host}");
+            var db = animalFactsConfig.GetValue<string>("DbName");
+            var username = animalFactsConfig.GetValue<string>("DbUser");
+            var password = animalFactsConfig.GetValue<string>("DbPass");
             var connectionString =
-                $"Host={animalFactsConfig.GetValue<string>("DbHost")};" +
-                $"Database={animalFactsConfig.GetValue<string>("DbName")};" +
-                $"Username={animalFactsConfig.GetValue<string>("DbUser")};" +
-                $"Password={animalFactsConfig.GetValue<string>("DbPassword")}";
+                $"Host={host};" +
+                $"Database={db};" +
+                $"Username={username};" +
+                $"Password={password}";
 
+            Console.WriteLine(connectionString);
             var dbContext = new AnimalFactsContext(connectionString);
 
             dbContext.AddRangeAsync(facts);
@@ -44,7 +50,7 @@ static class Program
 
     static void Main(string[] args)
     {
-        IConfiguration dbConfig = new ConfigurationBuilder().AddUserSecrets<DatabaseConfiguration>().Build();
+        IConfiguration dbConfig = new ConfigurationBuilder().AddJsonFile("appsettings.Development.json").Build();
 
         try
         {

@@ -2,15 +2,14 @@ using AnimalFactsApi.Dao;
 using AnimalFactsApi.Model;
 using FluentResults;
 
-namespace AnimalFactsApi;
+namespace AnimalFactsApi.Repo;
 
 public interface IFactRepository
 {
-    Task<Result<AnimalFact>> getFact(string? id);
+    Task<Result<AnimalFact?>> GetFact(string? id);
 }
 
 class FactRepository(IFactDao dao) : IFactRepository
 {
-    public async Task<Result<AnimalFact>> getFact(string? id) =>
-        await (id == null ? dao.getFact() : dao.getFactById(id));
+    public Task<Result<AnimalFact?>> GetFact(string? id) => id == null ? dao.GetFact() : dao.GetFactById(id);
 }
