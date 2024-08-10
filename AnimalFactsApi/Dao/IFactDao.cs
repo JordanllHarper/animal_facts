@@ -17,7 +17,7 @@ public class FactDao(IServiceProvider serviceProvider) : IFactDao
     // private readonly 
     public Task<Result<AnimalFact?>> GetFact()
     {
-        var context = serviceProvider.GetRequiredService<AnimalFactsContext>();
+        using var context = serviceProvider.GetRequiredService<AnimalFactsContext>();
         return context.Facts.FromSqlInterpolated($"SELECT * FROM animal_facts_db.public.facts ORDER BY random() LIMIT 1")
             .FirstOrDefaultAsync().ContinueWith(t => t.Result.ToResult());
     }
@@ -25,7 +25,7 @@ public class FactDao(IServiceProvider serviceProvider) : IFactDao
 
     public Task<Result<AnimalFact?>> GetFactById(string id)
     {
-        var context = serviceProvider.GetRequiredService<AnimalFactsContext>();
+        using var context = serviceProvider.GetRequiredService<AnimalFactsContext>();
         try
         {
             var parsed = int.Parse(id);
