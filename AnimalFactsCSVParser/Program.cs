@@ -27,15 +27,7 @@ static class Program
             var animalFactsConfig = configuration.GetSection("AnimalFacts");
             var host = animalFactsConfig.GetValue<string>("DbHost");
             Console.WriteLine($"Using host: {host}");
-            var db = animalFactsConfig.GetValue<string>("DbName");
-            var username = animalFactsConfig.GetValue<string>("DbUser");
-            var password = animalFactsConfig.GetValue<string>("DbPass");
-            var connectionString =
-                $"Host={host};" +
-                $"Database={db};" +
-                $"Username={username};" +
-                $"Password={password}";
-
+            const string connectionString = "Host=localhost:5432;Database=animal_facts_db";
             Console.WriteLine(connectionString);
             var dbContext = new AnimalFactsContext(connectionString);
 

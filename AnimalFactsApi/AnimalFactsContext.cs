@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnimalFactsApi;
 
-public class AnimalFactsContext : DbContext
+public class AnimalFactsContext(DbContextOptions<AnimalFactsContext> options) : DbContext(options)
 {
     public DbSet<AnimalFact> Facts { get; init; }
 }

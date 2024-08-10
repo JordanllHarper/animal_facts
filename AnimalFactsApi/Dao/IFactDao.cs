@@ -1,5 +1,6 @@
 using AnimalFactsApi.Model;
 using FluentResults;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -11,15 +12,20 @@ public interface IFactDao
     Task<Result<AnimalFact?>> GetFactById(string id);
 }
 
-public class FactDao(AnimalFactsContext context) : IFactDao
+public class FactDao(IServiceProvider serviceProvider) : IFactDao
 {
-    public Task<Result<AnimalFact?>> GetFact() =>
-        context.Facts.FromSqlInterpolated($"SELECT * FROM animal_facts_db.facts ORDER BY random() LIMIT 1")
+    // private readonly 
+    public Task<Result<AnimalFact?>> GetFact()
+    {
+        var context = serviceProvider.GetRequiredService<AnimalFactsContext>();
+        return context.Facts.FromSqlInterpolated($"SELECT * FROM animal_facts_db.public.facts ORDER BY random() LIMIT 1")
             .FirstOrDefaultAsync().ContinueWith(t => t.Result.ToResult());
+    }
 
 
     public Task<Result<AnimalFact?>> GetFactById(string id)
     {
+        var context = serviceProvider.GetRequiredService<AnimalFactsContext>();
         try
         {
             var parsed = int.Parse(id);

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnimalFactsApi;
 
-record DatabaseConfiguration(string DbName, string DbConnectionString, string DbUsername, string DbPassword);
+record DatabaseConfiguration(string DbHost, string DbName);
 
 public class Program
 {
@@ -20,18 +20,16 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
-        var animalFactsConfig = builder.Configuration.GetSection("AnimalFacts");
         var connectionString =
-            $"Host={animalFactsConfig.GetValue<string>("DbHost")};" +
-            $"Database={animalFactsConfig.GetValue<string>("DbName")};" +
-            $"Username={animalFactsConfig.GetValue<string>("DbUser")};" +
-            $"Password={animalFactsConfig.GetValue<string>("DbPassword")}";
+            $"Host=localhost:5432;" +
+            $"Database=animal_facts_db;";
         builder.Services.AddSingleton<IFactDao, FactDao>();
         builder.Services.AddSingleton<IFactRepository, FactRepository>();
         builder.Services.AddDbContext<AnimalFactsContext>(options =>
-            options
-                .UseNpgsql(connectionString)
-                .UseSnakeCaseNamingConvention()
+                options
+                    .UseNpgsql(connectionString)
+                    .UseSnakeCaseNamingConvention(),
+            contextLifetime: ServiceLifetime.Singleton
         );
 
         var app = builder.Build();
